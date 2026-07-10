@@ -7,8 +7,7 @@ All heavy lifting (PDF ingestion, embeddings, vector store, LLM, hybrid
 retrieval, reranking, BERTScore) lives in model.py. This file only wires
 up the chat UI on top of it.
 
-Run with:
-    python app.py
+
 """
 
 import os
@@ -20,9 +19,7 @@ import gradio as gr
 import model
 
 
-# ---------------------------------------------------------------------------
-# UI helper functions
-# ---------------------------------------------------------------------------
+
 def _guess_company_names():
     names = set()
     try:

@@ -9,9 +9,6 @@ Core RAG pipeline for the Financial Research Assistant:
   - Corrective RAG (widen search if retrieval quality is low)
   - Local LLM (Llama-3.1-8B-Instruct, 4-bit) for answer generation
   - BERTScore grounding/faithfulness metric
-
-app.py imports `financial_rag_with_bertscore` (and a couple of helpers) from
-this module and wraps them in a Gradio UI.
 """
 
 import os
@@ -31,11 +28,6 @@ import pdfplumber
 from langchain_core.documents import Document
 from langchain_core.chat_history import InMemoryChatMessageHistory
 
-# ---------------------------------------------------------------------------
-# Configuration
-# ---------------------------------------------------------------------------
-# All of these can be overridden with environment variables so the app is
-# portable outside of the original Kaggle notebook environment.
 
 PDF_DIR = os.environ.get("PDF_DIR", "./data/SEC Filings")
 PERSIST_DIR = os.environ.get("CHROMA_PERSIST_DIR", "./financial_db")
@@ -43,11 +35,7 @@ EMBEDDING_MODEL_NAME = os.environ.get("EMBEDDING_MODEL", "BAAI/bge-base-en-v1.5"
 LLM_MODEL_ID = os.environ.get("LLM_MODEL_ID", "meta-llama/Llama-3.1-8B-Instruct")
 DEVICE = os.environ.get("DEVICE", "cuda" if torch.cuda.is_available() else "cpu")
 
-# NOTE: Never hardcode your HuggingFace token in source code.
-# Set it as an environment variable before running:
-#   export HF_TOKEN="hf_xxx"           (Linux/Mac)
-#   setx HF_TOKEN "hf_xxx"             (Windows)
-# or put it in a local .env file that is excluded via .gitignore.
+
 HF_TOKEN = os.environ.get("HF_TOKEN")
 
 
@@ -62,9 +50,7 @@ def hf_login():
     print("✅ Logged into HuggingFace")
 
 
-# ---------------------------------------------------------------------------
-# Globals populated by initialize()
-# ---------------------------------------------------------------------------
+
 pdf_files = []
 all_documents = []
 chunks = []
@@ -77,9 +63,6 @@ _memory_store = {}
 _bert_log = []
 
 
-# ---------------------------------------------------------------------------
-# 1. PDF ingestion (text + tables)
-# ---------------------------------------------------------------------------
 def load_pdfs(pdf_dir: str = PDF_DIR):
     """Extract text and table blocks from every PDF in pdf_dir."""
     global pdf_files, all_documents
@@ -161,9 +144,7 @@ def _to_okf_concept(doc: Document) -> Document:
     return doc
 
 
-# ---------------------------------------------------------------------------
-# 2. Embeddings + Semantic Chunking
-# ---------------------------------------------------------------------------
+
 def load_embedding_model():
     global embedding_model
     from langchain_huggingface import HuggingFaceEmbeddings
@@ -218,9 +199,7 @@ def build_chunks(documents):
     return chunks
 
 
-# ---------------------------------------------------------------------------
-# 3. Vector store
-# ---------------------------------------------------------------------------
+
 def build_vectorstore(doc_chunks, persist_directory: str = PERSIST_DIR):
     global vectorstore
     from langchain_chroma import Chroma
@@ -247,9 +226,7 @@ def load_vectorstore(persist_directory: str = PERSIST_DIR):
     return vectorstore
 
 
-# ---------------------------------------------------------------------------
-# 4. LLM (Llama-3.1-8B-Instruct, 4-bit quantized)
-# ---------------------------------------------------------------------------
+
 def load_llm(model_id: str = LLM_MODEL_ID):
     global llm, chat_llm
     from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig, pipeline
@@ -296,9 +273,7 @@ def load_cross_encoder():
     return cross_encoder
 
 
-# ---------------------------------------------------------------------------
-# 5. Memory / text utilities
-# ---------------------------------------------------------------------------
+
 def get_memory(company=None, session_id="default"):
     key = (company.lower().strip() if company else None, session_id)
     if key not in _memory_store:
@@ -322,9 +297,7 @@ def _clean_text(text):
                   flags=re.IGNORECASE | re.DOTALL).strip()
 
 
-# ---------------------------------------------------------------------------
-# 6. Hybrid retrieval (semantic + BM25) + reranking + corrective RAG
-# ---------------------------------------------------------------------------
+
 def hybrid_retrieval(query, vs, company=None, k=40):
     from rank_bm25 import BM25Okapi
 
@@ -421,9 +394,6 @@ def _build_history_text(memory, max_turns=3):
     return "\n".join(lines)
 
 
-# ---------------------------------------------------------------------------
-# 7. Main RAG entrypoint
-# ---------------------------------------------------------------------------
 def financial_rag(query: str, company: str = None, session_id: str = "default"):
     global vectorstore, embedding_model, llm
 
@@ -435,7 +405,7 @@ def financial_rag(query: str, company: str = None, session_id: str = "default"):
     query_preview = (query.strip()[:60] + "...") if len(query.strip()) > 60 else query.strip()
     print(f"🔍 Company: {company or 'All'} | Query: {query_preview}")
 
-    # ── Retrieval ──────────────────────────────────────────────────────────
+
     candidates = hybrid_retrieval(query, vectorstore, company=company, k=50)
     reranked = rerank_with_cross_encoder(query, candidates, top_n=12)
     reranked = multimodal_boost(reranked)
@@ -458,7 +428,7 @@ def financial_rag(query: str, company: str = None, session_id: str = "default"):
 
     context = "\n\n---\n\n".join(_strip_sec_header(doc.page_content) for doc, _ in filtered_docs)
 
-    # ── Pass 1: Generate Response ───────────────────────────────────────────
+    # Pass 1: Generate Response 
     print("📝 Pass 1: Generating Response")
     pass1_prompt = f"""You are a Senior Institutional Financial Analyst.
 

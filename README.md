@@ -86,7 +86,7 @@ Gradio Chat UI
 - **BAAI/bge-base-en-v1.5** — embedding model
 - **rank-bm25** — keyword retrieval
 - **cross-encoder/ms-marco-MiniLM-L-6-v2** — reranking
-- **Llama-3.1-8B-Instruct** (4-bit, via `bitsandbytes`) — generation
+- **Mistral-7B-Instruct** (4-bit, via `bitsandbytes`) — generation
 - **bert-score** — faithfulness evaluation
 - **Gradio** — chat UI
 - **PyMuPDF** / **pdfplumber** — PDF text & table extraction

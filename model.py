@@ -7,7 +7,7 @@ Core RAG pipeline for the Financial Research Assistant:
   - Embedding + Chroma vector store (built once, then persisted/reloaded)
   - Hybrid retrieval (semantic + BM25) with cross-encoder reranking
   - Corrective RAG (widen search if retrieval quality is low)
-  - Local LLM (Llama-3.1-8B-Instruct, 4-bit) for answer generation
+  - Local LLM (mistralai/Mistral-7B-Instruct-v0.3, 4-bit) for answer generation
   - BERTScore grounding/faithfulness metric
 """
 
@@ -32,7 +32,7 @@ from langchain_core.chat_history import InMemoryChatMessageHistory
 PDF_DIR = os.environ.get("PDF_DIR", "./data/SEC Filings")
 PERSIST_DIR = os.environ.get("CHROMA_PERSIST_DIR", "./financial_db")
 EMBEDDING_MODEL_NAME = os.environ.get("EMBEDDING_MODEL", "BAAI/bge-base-en-v1.5")
-LLM_MODEL_ID = os.environ.get("LLM_MODEL_ID", "meta-llama/Llama-3.1-8B-Instruct")
+LLM_MODEL_ID = os.environ.get("LLM_MODEL_ID", "mistralai/Mistral-7B-Instruct-v0.3")
 DEVICE = os.environ.get("DEVICE", "cuda" if torch.cuda.is_available() else "cpu")
 
 

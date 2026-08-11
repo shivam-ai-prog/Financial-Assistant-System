@@ -16,7 +16,7 @@ faithfulness scoring.
 - Retrieves context using **hybrid search**: dense embeddings + BM25 keyword search
 - **Reranks** candidates with a cross-encoder, with a boost for table content
 - Runs **Corrective RAG**: automatically widens the search if initial retrieval quality is low
-- Generates grounded answers with **Llama-3.1-8B-Instruct** (4-bit quantized)
+- Generates grounded answers with ** Mistral-7B-Instruct**(4-bit quantized)
 - Scores every answer's faithfulness to its source context with **BERTScore**
 - Maintains **per-company, per-session conversation memory**
 - Serves everything through a clean **Gradio** chat UI
@@ -68,7 +68,7 @@ Cross-Encoder Reranking + Table Boost
 Corrective RAG (quality check → widen search if needed)
       │
       ▼
-Llama-3.1-8B-Instruct (4-bit) → Grounded Answer
+Mistral-7B-Instruct (4-bit) → Grounded Answer
       │
       ▼
 BERTScore Faithfulness Check

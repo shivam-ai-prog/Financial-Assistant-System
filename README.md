@@ -16,7 +16,7 @@ faithfulness scoring.
 - Retrieves context using **hybrid search**: dense embeddings + BM25 keyword search
 - **Reranks** candidates with a cross-encoder, with a boost for table content
 - Runs **Corrective RAG**: automatically widens the search if initial retrieval quality is low
-- Generates grounded answers with ** Mistral-7B-Instruct**(4-bit quantized)
+- Generates grounded answers with ** "Qwen/Qwen3.8-27b**
 - Scores every answer's faithfulness to its source context with **BERTScore**
 - Maintains **per-company, per-session conversation memory**
 - Serves everything through a clean **Gradio** chat UI
@@ -86,7 +86,7 @@ Gradio Chat UI
 - **BAAI/bge-base-en-v1.5** — embedding model
 - **rank-bm25** — keyword retrieval
 - **cross-encoder/ms-marco-MiniLM-L-6-v2** — reranking
-- **Mistral-7B-Instruct** (4-bit, via `bitsandbytes`) — generation
+- **"Qwen/Qwen3.8-27b** — generation
 - **bert-score** — faithfulness evaluation
 - **Gradio** — chat UI
 - **PyMuPDF** / **pdfplumber** — PDF text & table extraction

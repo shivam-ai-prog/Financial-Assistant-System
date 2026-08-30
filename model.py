@@ -7,7 +7,7 @@ Core RAG pipeline for the Financial Research Assistant:
   - Embedding + Chroma vector store (built once, then persisted/reloaded)
   - Hybrid retrieval (semantic + BM25) with cross-encoder reranking
   - Corrective RAG (widen search if retrieval quality is low)
-  - Local LLM (mistralai/Mistral-7B-Instruct-v0.3, 4-bit) for answer generation
+  - Local LLM Qwen/Qwen3.8-27b for answer generation
   - BERTScore grounding/faithfulness metric
 """
 

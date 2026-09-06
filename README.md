@@ -68,7 +68,7 @@ Cross-Encoder Reranking + Table Boost
 Corrective RAG (quality check → widen search if needed)
       │
       ▼
-Mistral-7B-Instruct (4-bit) → Grounded Answer
+Qwen/Qwen3.8-27b → Grounded Answer
       │
       ▼
 BERTScore Faithfulness Check

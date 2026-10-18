@@ -1,0 +1,26 @@
+# Core
+numpy
+python-dotenv
+openai                    # OpenRouter (answers) + Groq (router) via the OpenAI-compatible API
+sentence-transformers     # embeddings (BAAI/bge-base-en-v1.5) + cross-encoder reranker
+rank-bm25
+langchain-text-splitters  # chunking only
+
+#Optional vector DB (only if VECTOR_BACKEND=qdrant)
+qdrant-client
+
+
+# SEC + PDFs
+edgartools
+beautifulsoup4
+lxml
+pymupdf
+pdfplumber
+
+# UI
+gradio>=4.44
+plotly>=5.20
+pandas
+
+# Tests
+pytest

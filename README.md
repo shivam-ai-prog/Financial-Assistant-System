@@ -23,15 +23,27 @@ measures **financial performance** (scorecards, year-over-year and quarterly tre
 
 ## Architecture
 
-```
- User ──> app.py (Gradio chat) ──> LLM Router (model.py)
-                                     ├── Live ingestion ──> SEC EDGAR ──> SQLite
+ User ──> app.py (Gradio chat) ──> LLM Router (model.py)  ── one call decides: filings needed, chart?, task, intent
+                                     │
+        task = qa ───────────────────┼── Live ingestion ──> SEC EDGAR ──> SQLite (filings, sections, chunks, vectors)
                                      ├── Retrieval, by intent (intents.py): section filter -> dense (vectorstore.py)
                                      │     + BM25 -> RRF -> cross-encoder ──> SQLite / Qdrant index
-                                     ├── Chart tool (analytics.py) ──> SQLite (extracted income-statement numbers)
+                                     ├── Chart tool (analytics.py) ──> metrics table
                                      └── Answer writer ──> OpenRouter LLM (+ Calculator tool)
+
+        task = performance / report ─> report.py
+                                         ├── 1. ensure filings are stored (live ingestion, as above)
+                                         ├── 2. analytics.py: read income statement, balance sheet, cash flow
+                                         │      from the stored filing text -> `metrics` table (SQLite)
+                                         ├── 3. metrics_engine.py (no LLM): ratios, YoY / QoQ, scorecard,
+                                         │      peer ranking, "who leads" lines
+                                         ├── 4. report.py builds blocks:
+                                         │      tables + scorecard + charts      <- code only
+                                         │      commentary, overview, risks,
+                                         │      investment view                  <- LLM, fed only the tables and
+                                         │                                          retrieved 10-K Items 1 / 1A
+                                         └── 5. output: Markdown in chat + .docx (data/reports/)
  Admin ─> admin.py ─────────────────> same SQLite database (data/filings_index.db)
-```
 
 ## Project layout
 

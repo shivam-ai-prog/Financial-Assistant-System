@@ -35,7 +35,7 @@ No number reaches the user unless it comes from a stored filing, the metrics eng
 ```
  User ──> app.py (Gradio) ──> agents.answer()
                                    │
-                              ┌────▼─────┐   LLM decides route + companies (keyword rules if the model fails)
+                              ┌────▼─────┐   LLM decides route + companies 
                               │ planner  │
                               └────┬─────┘
         ┌───────────┬──────────────┼───────────────┬────────────┐
